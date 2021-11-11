@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
   image-url: http://gonggang.yeokeong.com/images
 path:
-  image-folder: /root/~~~ # FIXME
+  image-folder: /root/GongGangImg # FIXME
