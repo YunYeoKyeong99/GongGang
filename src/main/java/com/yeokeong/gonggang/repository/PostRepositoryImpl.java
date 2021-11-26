@@ -18,13 +18,75 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
     private final QPostLike qPostLike = QPostLike.postLike;
     private final QPostPicture qPostPicture = QPostPicture.postPicture;
     private final QPostBookmark qPostBookmark = QPostBookmark.postBookmark;
+    private final QPostCategory qPostCategory = QPostCategory.postCategory;
 
     public PostRepositoryImpl() {
         super(Post.class);
     }
 
     @Override
-    public List<Post> findAllByPostSeqLowerThan(
+    public List<Post> findAllByUserSeq(
+            Long userSeq,
+            Integer pageSize,
+            Long prevLastPostSeq
+    ) {
+        final Predicate[] predicates = new Predicate[]{
+                predicateOptional(qPost.seq::lt, prevLastPostSeq)
+        };
+
+        return from(qPost)
+                .select(new QPostProjection(qPost, qPostLike, qPostBookmark))
+                //.innerJoin(qPost.user, qUser).fetchJoin()
+                .leftJoin(qPost.pictures, qPostPicture).fetchJoin()
+                .leftJoin(qPostLike)
+                .on(qPostLike.postSeq.eq(qPost.seq)
+                        .and(qPostLike.userSeq.eq(userSeq)))
+                .leftJoin(qPostBookmark)
+                .on(qPostBookmark.postSeq.eq(qPost.seq)
+                        .and(qPostBookmark.userSeq.eq(userSeq)))
+                .where(predicates)
+                .where(qPost.user.seq.eq(userSeq))
+                .orderBy(qPost.seq.desc())
+                .limit(pageSize)
+                .fetch()
+                .stream()
+                .distinct()
+                .map(PostProjection::getPost)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Post> findAllByPostBookMark(
+            Long userSeq,
+            Integer pageSize,
+            Long prevLastPostSeq
+    ) {
+        final Predicate[] predicates = new Predicate[]{
+                predicateOptional(qPost.seq::lt, prevLastPostSeq)
+        };
+
+        return from(qPost)
+                .select(new QPostProjection(qPost, qPostLike, qPostBookmark))
+                .innerJoin(qPost.user, qUser).fetchJoin()
+                .innerJoin(qPostBookmark)
+                .on(qPostBookmark.postSeq.eq(qPost.seq)
+                        .and(qPostBookmark.userSeq.eq(userSeq)))
+                .leftJoin(qPost.pictures, qPostPicture).fetchJoin()
+                .leftJoin(qPostLike)
+                .on(qPostLike.postSeq.eq(qPost.seq)
+                        .and(qPostLike.userSeq.eq(userSeq)))
+                .where(predicates)
+                .orderBy(qPost.seq.desc())
+                .limit(pageSize)
+                .fetch()
+                .stream()
+                .distinct()
+                .map(PostProjection::getPost)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Post> findAll(
             Long userSeq,
             TimingType timingType,
             CostType costType,

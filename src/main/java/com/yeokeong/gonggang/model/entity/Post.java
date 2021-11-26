@@ -1,9 +1,7 @@
 package com.yeokeong.gonggang.model.entity;
 
-import com.yeokeong.gonggang.common.CostType;
-import com.yeokeong.gonggang.common.DurationTimeType;
-import com.yeokeong.gonggang.common.PostStatus;
-import com.yeokeong.gonggang.common.TimingType;
+import com.yeokeong.gonggang.common.*;
+import jdk.jfr.Category;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,6 +35,8 @@ public class Post extends AbstractTimeEntity {
 
     private Long likeCnt;
 
+    private String linkUrl;
+
     @Enumerated(EnumType.STRING)
     private PostStatus status;
 
@@ -46,6 +46,10 @@ public class Post extends AbstractTimeEntity {
 
     @OneToMany(mappedBy = "post")
     private List<PostPicture> pictures;
+
+    @OneToMany
+    @JoinColumn(name = "post_seq")
+    private List<PostCategory> categories;
 
     @Transient
     private Boolean isLike;

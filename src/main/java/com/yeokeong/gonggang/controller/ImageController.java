@@ -1,6 +1,7 @@
 package com.yeokeong.gonggang.controller;
 
 import com.yeokeong.gonggang.security.SessionUser;
+import com.yeokeong.gonggang.services.PlaceService;
 import com.yeokeong.gonggang.services.PostService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
     private final PostService postService;
+    private final PlaceService placeService;
 
     @ApiOperation("글 이미지 추가")
     @PostMapping(value = "/v1/posts/{seq}/pictures", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -33,6 +35,17 @@ public class ImageController {
             @RequestPart List<MultipartFile> imageFiles
     ) {
         postService.createPostPictures(userSeq, seq, imageFiles);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation("장소 이미지 추가")
+    @PostMapping(value = "/v1/place/{seq}/pictures", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createPlacePictures(
+            @ApiParam(hidden = true) @SessionUser Long userSeq,
+            @PathVariable Long seq,
+            @RequestPart List<MultipartFile> imageFiles
+    ) {
+        placeService.createPlacePictures(seq,imageFiles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

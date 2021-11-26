@@ -9,7 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepositorySupport {
-    List<Post> findAllByPostSeqLowerThan(
+    List<Post> findAllByUserSeq(
+            Long userSeq,
+            Integer pageSize,
+            Long prevLastPostSeq
+    );
+    List<Post> findAllByPostBookMark(
+            Long userSeq,
+            Integer pageSize,
+            Long prevLastPostSeq
+    );
+    List<Post> findAll(
             Long userSeq,
             TimingType timingType,
             CostType costType,

@@ -52,9 +52,22 @@ public class PostController {
     @ApiOperation("북마크글리스트보기")
     @GetMapping(value = "/v1/bookmark/posts")
     public List<ResPostList> getBookmarkPostList(
-            @ApiParam(hidden = true) @SessionUser Long userSeq
+            @ApiParam(hidden = true) @SessionUser Long userSeq,
+            @Valid ReqPostList req
     ){
-        return postService.getBookmarkPostList(userSeq)
+        return postService.getBookmarkPostList(userSeq, req)
+                .stream()
+                .map(ResPostList::of)
+                .collect(Collectors.toList());
+    }
+
+    @ApiOperation("내가쓴글리스트보기")
+    @GetMapping(value = "/v1/me/posts")
+    public List<ResPostList> getMyPostList(
+            @ApiParam(hidden = true) @SessionUser Long userSeq,
+            @Valid ReqPostList req
+    ){
+        return postService.getMyPostList(userSeq, req)
                 .stream()
                 .map(ResPostList::of)
                 .collect(Collectors.toList());
@@ -78,6 +91,8 @@ public class PostController {
             @ApiParam(hidden = true) @SessionUser Long userSeq,
             @PathVariable Long seq
     ){
+        log.info(userSeq.toString());
+
         return ResPost.of(postService.getPost(userSeq, seq));
     }
 
@@ -87,11 +102,8 @@ public class PostController {
             @ApiParam(hidden = true) @SessionUser Long userSeq,
             @RequestBody @Valid ReqPostCreate reqPostCreate
     ) {
-        try {
-            postService.createPost(userSeq, reqPostCreate);
-        }catch (IOException e){
+        postService.createPost(userSeq, reqPostCreate);
 
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

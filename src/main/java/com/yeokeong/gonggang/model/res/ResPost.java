@@ -1,10 +1,12 @@
 package com.yeokeong.gonggang.model.res;
 
+import com.yeokeong.gonggang.common.CategoryType;
 import com.yeokeong.gonggang.common.CostType;
 import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
 import com.yeokeong.gonggang.config.AppConfig;
 import com.yeokeong.gonggang.model.entity.Post;
+import com.yeokeong.gonggang.model.entity.PostCategory;
 import com.yeokeong.gonggang.model.entity.PostPicture;
 import lombok.Getter;
 
@@ -20,12 +22,14 @@ public class ResPost {
     private TimingType timingType;
     private DurationTimeType durationTimeType;
     private CostType costType;
+    private List<CategoryType> categoryTypes;
     private ResUser user;
     private List<String> pictureUrls;
     private Long likeCnt;
     private Boolean isLike;
     private Boolean isBookmark;
     private LocalDateTime createdAt;
+    private String linkUrl;
 
     private ResPost(Post post) {
         this.seq = post.getSeq();
@@ -34,6 +38,9 @@ public class ResPost {
         this.timingType = post.getTimingType();
         this.durationTimeType = post.getDurationTimeType();
         this.costType = post.getCostType();
+        this.categoryTypes = post.getCategories().stream()
+                .map(PostCategory::getCategoryType)
+                .collect(Collectors.toList());
         this.user = ResUser.of(post.getUser());
         this.pictureUrls = post.getPictures().stream()
                 .map(PostPicture::getPath)
@@ -43,6 +50,7 @@ public class ResPost {
         this.isLike = post.getIsLike();
         this.isBookmark = post.getIsBookmark();
         this.createdAt = post.getCreatedAt();
+        this.linkUrl = post.getLinkUrl();
     }
 
     public static ResPost of(Post post) {
