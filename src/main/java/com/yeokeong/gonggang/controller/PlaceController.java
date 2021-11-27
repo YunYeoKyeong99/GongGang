@@ -1,6 +1,8 @@
 package com.yeokeong.gonggang.controller;
 
+import com.yeokeong.gonggang.model.req.ReqPlaceCreate;
 import com.yeokeong.gonggang.model.req.ReqPlaceList;
+import com.yeokeong.gonggang.model.req.ReqPostCreate;
 import com.yeokeong.gonggang.model.res.ResPlace;
 import com.yeokeong.gonggang.model.res.ResPlaceList;
 import com.yeokeong.gonggang.model.res.ResPost;
@@ -11,10 +13,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,6 +47,17 @@ public class PlaceController {
             @PathVariable Long seq
     ){
         return ResPlace.of(placeService.getPlace(userSeq,seq));
+    }
+
+    @ApiOperation("장소추가")
+    @PostMapping(value = "/v1/places", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> createPlace(
+            @ApiParam(hidden = true) @SessionUser Long userSeq,
+            @RequestBody @Valid ReqPlaceCreate reqPlaceCreate
+    ) {
+        placeService.createPlace(userSeq, reqPlaceCreate);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

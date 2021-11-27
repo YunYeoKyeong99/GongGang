@@ -2,6 +2,7 @@ package com.yeokeong.gonggang.services;
 
 
 import com.yeokeong.gonggang.model.entity.PlacePicture;
+import com.yeokeong.gonggang.model.req.ReqPlaceCreate;
 import com.yeokeong.gonggang.model.req.ReqPlaceList;
 import org.springframework.util.CollectionUtils;
 import com.yeokeong.gonggang.httpException.ResponseError;
@@ -52,6 +53,20 @@ public class PlaceService {
 
         return place;
     }
+
+    public void createPlace(Long userSeq, ReqPlaceCreate req) {
+
+        final Place place = Place.builder()
+                .name(req.getName())
+                .location(req.getLocation())
+                .operatingTime(req.getOperatingTime())
+                .menu(req.getMenu())
+                .linkUrl(req.getLinkUrl())
+                .build();
+
+        placeRepository.save(place);
+    }
+
 
     public void createPlacePictures(Long seq, List<MultipartFile> imageFiles) {
 
