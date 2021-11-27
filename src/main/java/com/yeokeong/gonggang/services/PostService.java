@@ -72,6 +72,7 @@ public class PostService {
                 req.getTimingType(),
                 req.getCostType(),
                 req.getDurationTimeType(),
+                req.getCategoryType(),
                 req.getPageSize(),
                 req.getPrevLastPostSeq()
         );

@@ -1,5 +1,6 @@
 package com.yeokeong.gonggang.model.req;
 
+import com.yeokeong.gonggang.common.CategoryType;
 import com.yeokeong.gonggang.common.CostType;
 import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
@@ -15,6 +16,7 @@ public class ReqPostList {
     private TimingType timingType;
     private CostType costType;
     private DurationTimeType durationTimeType;
+    private CategoryType categoryType;
 
     @Min(1L)
     private Long prevLastPostSeq;

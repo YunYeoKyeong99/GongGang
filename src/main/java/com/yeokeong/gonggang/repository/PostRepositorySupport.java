@@ -1,5 +1,6 @@
 package com.yeokeong.gonggang.repository;
 
+import com.yeokeong.gonggang.common.CategoryType;
 import com.yeokeong.gonggang.common.CostType;
 import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
@@ -24,6 +25,7 @@ public interface PostRepositorySupport {
             TimingType timingType,
             CostType costType,
             DurationTimeType durationTimeType,
+            CategoryType categoryType,
             Integer pageSize,
             Long prevLastPostSeq
     );

@@ -1,12 +1,14 @@
 package com.yeokeong.gonggang.repository;
 
 import com.querydsl.core.types.Predicate;
+import com.yeokeong.gonggang.common.CategoryType;
 import com.yeokeong.gonggang.common.CostType;
 import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
 import com.yeokeong.gonggang.model.entity.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -91,6 +93,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
             TimingType timingType,
             CostType costType,
             DurationTimeType durationTimeType,
+            CategoryType categoryType,
             Integer pageSize,
             Long prevLastPostSeq
     ) {
@@ -104,7 +107,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
                 predicateOptional(qPost.seq::lt, prevLastPostSeq),
                 predicateOptional(qPost.timingType::eq, timingType),
                 predicateOptional(qPost.costType::eq, costType),
-                predicateOptional(qPost.durationTimeType::eq, durationTimeType),
+                predicateOptional(qPost.durationTimeType::eq, durationTimeType)
         };
 
         /**
@@ -133,7 +136,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
          LIMIT 10
          */
 
-        return from(qPost)
+        List<Post> postList = from(qPost)
                 .select(new QPostProjection(qPost, qPostLike, qPostBookmark))
                 .innerJoin(qPost.user, qUser).fetchJoin()
                 .leftJoin(qPost.pictures, qPostPicture).fetchJoin()
@@ -151,6 +154,15 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
                 .distinct()
                 .map(PostProjection::getPost)
                 .collect(Collectors.toList());
+
+        if(categoryType != null) {
+            return postList
+                    .stream()
+                    .filter( p -> p.getCategories().stream().anyMatch( pc -> pc.getCategoryType() == categoryType) )
+                    .collect(Collectors.toList());
+        }
+
+        return postList;
     }
 
     @Override
