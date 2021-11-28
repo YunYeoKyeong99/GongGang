@@ -139,7 +139,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Pos
         List<Post> postList = from(qPost)
                 .select(new QPostProjection(qPost, qPostLike, qPostBookmark))
                 .innerJoin(qPost.user, qUser).fetchJoin()
-                .leftJoin(qPost.pictures, qPostPicture).fetchJoin()
+//                .leftJoin(qPost.pictures, qPostPicture).fetchJoin()
                 .leftJoin(qPostLike)
                 .on(qPostLike.postSeq.eq(qPost.seq)
                         .and(qPostLike.userSeq.eq(userSeq)))
