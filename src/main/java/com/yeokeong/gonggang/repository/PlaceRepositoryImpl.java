@@ -30,7 +30,7 @@ public class PlaceRepositoryImpl extends QuerydslRepositorySupport implements Pl
 
         return from(qPlace)
                 .select(qPlace)
-                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
+//                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
                 .where(predicates)
                 .orderBy(qPlace.seq.desc())
                 .limit(pageSize)
@@ -45,7 +45,7 @@ public class PlaceRepositoryImpl extends QuerydslRepositorySupport implements Pl
 
         return from(qPlace)
                 .select(qPlace)
-                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
+//                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
                 .where(qPlace.seq.eq(seq))
                 .fetch()
                 .stream()
