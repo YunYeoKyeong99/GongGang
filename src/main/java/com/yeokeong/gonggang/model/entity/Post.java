@@ -1,12 +1,12 @@
 package com.yeokeong.gonggang.model.entity;
 
 import com.yeokeong.gonggang.common.*;
-import jdk.jfr.Category;
+import com.yeokeong.gonggang.model.Link;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity(name = "post")
+@EqualsAndHashCode(callSuper = false, of = {"seq"})
 public class Post extends AbstractTimeEntity {
 
     @Id
@@ -35,7 +36,8 @@ public class Post extends AbstractTimeEntity {
 
     private Long likeCnt;
 
-    private String linkUrl;
+    @Convert(converter = LinkConverter.class)
+    private List<Link> links;
 
     @Enumerated(EnumType.STRING)
     private PostStatus status;
@@ -45,7 +47,7 @@ public class Post extends AbstractTimeEntity {
     private User user;
 
     @OneToMany(mappedBy = "post")
-    private List<PostPicture> pictures;
+    private Set<PostPicture> pictures;
 
     @OneToMany
     @JoinColumn(name = "post_seq")

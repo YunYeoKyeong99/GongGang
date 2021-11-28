@@ -5,13 +5,16 @@ import com.yeokeong.gonggang.common.CostType;
 import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
 import com.yeokeong.gonggang.config.AppConfig;
+import com.yeokeong.gonggang.model.Link;
 import com.yeokeong.gonggang.model.entity.Post;
 import com.yeokeong.gonggang.model.entity.PostCategory;
 import com.yeokeong.gonggang.model.entity.PostPicture;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -29,7 +32,7 @@ public class ResPost {
     private Boolean isLike;
     private Boolean isBookmark;
     private LocalDateTime createdAt;
-    private String linkUrl;
+    private List<ResLink> links;
 
     private ResPost(Post post) {
         this.seq = post.getSeq();
@@ -39,7 +42,7 @@ public class ResPost {
         this.durationTimeType = post.getDurationTimeType();
         this.costType = post.getCostType();
         this.categoryTypes = post.getCategories().stream()
-                .map(PostCategory::getCategoryType)
+                .map(item -> item.getId().getCategoryType())
                 .collect(Collectors.toList());
         this.user = ResUser.of(post.getUser());
         this.pictureUrls = post.getPictures().stream()
@@ -50,7 +53,11 @@ public class ResPost {
         this.isLike = post.getIsLike();
         this.isBookmark = post.getIsBookmark();
         this.createdAt = post.getCreatedAt();
-        this.linkUrl = post.getLinkUrl();
+        this.links = Optional.ofNullable(post.getLinks())
+                .stream()
+                .flatMap(Collection::stream)
+                .map(ResLink::of)
+                .collect(Collectors.toList());
     }
 
     public static ResPost of(Post post) {

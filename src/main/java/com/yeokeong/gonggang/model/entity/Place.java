@@ -1,10 +1,13 @@
 package com.yeokeong.gonggang.model.entity;
 
 
+import com.yeokeong.gonggang.common.LinkConverter;
+import com.yeokeong.gonggang.model.Link;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,9 +29,10 @@ public class Place extends AbstractTimeEntity {
 
     private String menu;
 
-    private String linkUrl;
+    @Convert(converter = LinkConverter.class)
+    private List<Link> links;
 
     @OneToMany(mappedBy = "place")
-    private List<PlacePicture> pictures;
+    private Set<PlacePicture> pictures;
 
 }

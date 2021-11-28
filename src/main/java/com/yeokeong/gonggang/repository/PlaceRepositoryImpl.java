@@ -2,12 +2,12 @@ package com.yeokeong.gonggang.repository;
 
 import com.querydsl.core.types.Predicate;
 import com.yeokeong.gonggang.model.entity.Place;
+import com.yeokeong.gonggang.model.entity.PlacePicture;
 import com.yeokeong.gonggang.model.entity.QPlace;
 import com.yeokeong.gonggang.model.entity.QPlacePicture;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,16 +28,28 @@ public class PlaceRepositoryImpl extends QuerydslRepositorySupport implements Pl
                 predicateOptional(qPlace.seq::lt, prevLastPlaceSeq),
         };
 
-        return from(qPlace)
+        final List<Place> placeList = from(qPlace)
                 .select(qPlace)
 //                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
                 .where(predicates)
                 .orderBy(qPlace.seq.desc())
                 .limit(pageSize)
+                .fetch();
+
+        placeList.forEach(p -> p.setPictures(new TreeSet<>()));
+
+        // TODO OneToMany 모두 이 방식으로 변경
+        // Place의 pircutres 조회
+        from(qPlacePicture)
+                .where(qPlacePicture.place.in(placeList))
                 .fetch()
-                .stream()
-                .distinct()
-                .collect(Collectors.toList());
+                .forEach(pic -> pic.getPlace().getPictures().add(pic));
+
+        // pictures 정렬
+//        placeList.forEach(p ->
+//                p.getPictures().sort(Comparator.comparingInt(PlacePicture::getTurn)));
+
+        return placeList;
     }
 
     @Override
@@ -45,7 +57,7 @@ public class PlaceRepositoryImpl extends QuerydslRepositorySupport implements Pl
 
         return from(qPlace)
                 .select(qPlace)
-//                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
+                .leftJoin(qPlace.pictures, qPlacePicture).fetchJoin()
                 .where(qPlace.seq.eq(seq))
                 .fetch()
                 .stream()

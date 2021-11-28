@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +19,5 @@ public class ReqPlaceCreate {
     private String operatingTime;
     @NotNull
     private String menu;
-    @NotNull
-    private String linkUrl;
+    private List<ReqLink> links = new LinkedList<>();
 }

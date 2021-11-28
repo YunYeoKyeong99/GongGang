@@ -2,7 +2,9 @@ package com.yeokeong.gonggang.services;
 
 import com.yeokeong.gonggang.common.PostStatus;
 import com.yeokeong.gonggang.httpException.ResponseError;
+import com.yeokeong.gonggang.model.Link;
 import com.yeokeong.gonggang.model.entity.*;
+import com.yeokeong.gonggang.model.req.ReqLink;
 import com.yeokeong.gonggang.model.req.ReqPostCreate;
 import com.yeokeong.gonggang.model.req.ReqPostList;
 import com.yeokeong.gonggang.repository.*;
@@ -105,7 +107,9 @@ public class PostService {
                 .costType(req.getCostType())
                 .status(PostStatus.NORMAL)
                 .likeCnt(0L)
-                .linkUrl(req.getLinkUrl())
+                .links(req.getLinks().stream()
+                    .map(ReqLink::toLink)
+                    .collect(Collectors.toList()))
                 .build();
 
         postRepository.save(post);
@@ -120,8 +124,7 @@ public class PostService {
         postCategoryRepository.saveAll(req.getCategoryTypeList()
                 .stream()
                 .map(type -> PostCategory.builder()
-                        .categoryType(type)
-                        .postSeq(post.getSeq())
+                        .id(new PostCategoryId(type, post))
                         .build())
                 .collect(Collectors.toList()));
     }

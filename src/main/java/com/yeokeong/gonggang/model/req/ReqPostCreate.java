@@ -6,8 +6,6 @@ import com.yeokeong.gonggang.common.DurationTimeType;
 import com.yeokeong.gonggang.common.TimingType;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,10 +28,11 @@ public class ReqPostCreate {
     private List<CategoryType> categoryTypeList = new ArrayList<>();
     @NotBlank
     private String content;
-    @NotNull
-    private String linkUrl; // TODO REGEX
+    private List<ReqLink> links = new LinkedList<>();
+
 
 //    private List<ProductBadge> badges = new LinkedList<>();
 
 //    private List<MultipartFile> pictures;
+
 }

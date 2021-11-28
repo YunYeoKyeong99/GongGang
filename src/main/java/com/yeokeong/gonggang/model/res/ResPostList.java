@@ -37,7 +37,7 @@ public class ResPostList {
         this.durationTimeType = post.getDurationTimeType();
         this.costType = post.getCostType();
         this.categoryTypes = post.getCategories().stream()
-                .map(PostCategory::getCategoryType)
+                .map(item -> item.getId().getCategoryType())
                 .collect(Collectors.toList());
         this.user = ResUser.of(post.getUser());
         this.pictureUrls = post.getPictures().stream()

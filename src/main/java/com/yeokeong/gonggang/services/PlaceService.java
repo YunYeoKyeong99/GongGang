@@ -2,6 +2,7 @@ package com.yeokeong.gonggang.services;
 
 
 import com.yeokeong.gonggang.model.entity.PlacePicture;
+import com.yeokeong.gonggang.model.req.ReqLink;
 import com.yeokeong.gonggang.model.req.ReqPlaceCreate;
 import com.yeokeong.gonggang.model.req.ReqPlaceList;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +63,9 @@ public class PlaceService {
                 .location(req.getLocation())
                 .operatingTime(req.getOperatingTime())
                 .menu(req.getMenu())
-                .linkUrl(req.getLinkUrl())
+                .links(req.getLinks().stream()
+                        .map(ReqLink::toLink)
+                        .collect(Collectors.toList()))
                 .build();
 
         placeRepository.save(place);
